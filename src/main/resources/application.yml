@@ -3,3 +3,13 @@ spring:
     name: mykkumi-server
 server:
   port: 8080
+
+springdoc:
+  packages-to-scan: com.swmarastro.mykkumiserver
+  default-consumes-media-type: application/json;charset=UTF-8
+  default-produces-media-type: application/json;charset=UTF-8
+  swagger-ui:
+    path: /
+    disable-swagger-default-url: true
+    display-request-duration: true
+    operations-sorter: alpha
