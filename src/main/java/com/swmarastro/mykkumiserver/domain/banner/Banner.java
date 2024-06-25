@@ -1,6 +1,5 @@
 package com.swmarastro.mykkumiserver.domain.banner;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Getter;
 
