@@ -1,8 +1,40 @@
 spring:
   application:
     name: mykkumi-server
+  config:
+    import:
+      - 'aws-secretsmanager:dev/mykkumi/mysql'
+      - 'aws-secretsmanager:dev/mykkumi/s3'
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${db_host}:${db_port}/dbMykkumiDev?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: ${db_username}
+    password: ${db_password}
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+
 server:
   port: 8080
+
+cloud:
+  aws:
+    s3:
+      bucket: ${s3_bucket_name}
+    credentials:
+      access-key: ${s3_access_key}
+      secret-key: ${s3_secret_key}
+    region:
+      auto: false
+      static: ${region}
+      use-default-aws-region-chain: true
+    stack:
+      auto: false
 
 springdoc:
   packages-to-scan: com.swmarastro.mykkumiserver
