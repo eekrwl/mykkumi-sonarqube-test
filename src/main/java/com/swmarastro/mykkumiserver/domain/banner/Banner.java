@@ -12,4 +12,5 @@ public class Banner {
     @Column(name = "banner_id")
     private Long id;
     private String imageUrl;
+    private String detailImageUrl;
 }
