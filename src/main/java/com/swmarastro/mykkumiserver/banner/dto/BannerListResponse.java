@@ -1,4 +1,4 @@
-package com.swmarastro.mykkumiserver.domain.banner.dto;
+package com.swmarastro.mykkumiserver.banner.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;

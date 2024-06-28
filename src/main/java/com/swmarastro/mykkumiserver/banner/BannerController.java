@@ -1,7 +1,7 @@
-package com.swmarastro.mykkumiserver.domain.banner;
+package com.swmarastro.mykkumiserver.banner;
 
-import com.swmarastro.mykkumiserver.domain.banner.dto.BannerDto;
-import com.swmarastro.mykkumiserver.domain.banner.dto.BannerListResponse;
+import com.swmarastro.mykkumiserver.banner.dto.BannerDto;
+import com.swmarastro.mykkumiserver.banner.dto.BannerListResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

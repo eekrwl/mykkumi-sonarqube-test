@@ -1,4 +1,4 @@
-package com.swmarastro.mykkumiserver.domain.banner;
+package com.swmarastro.mykkumiserver.banner;
 
 import jakarta.persistence.*;
 import lombok.Getter;
