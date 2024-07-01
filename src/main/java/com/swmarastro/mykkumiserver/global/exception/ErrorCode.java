@@ -11,6 +11,7 @@ public enum ErrorCode {
     //400 BAD REQUEST
     ENCODING_ERROR(HttpStatus.BAD_REQUEST),
     DECODING_ERROR(HttpStatus.BAD_REQUEST),
+    INVALID_VALUE(HttpStatus.BAD_REQUEST),
 
     // 404 NOT FOUND
     NOT_FOUND(HttpStatus.NOT_FOUND),

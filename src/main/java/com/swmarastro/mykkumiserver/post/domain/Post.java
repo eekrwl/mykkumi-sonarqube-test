@@ -36,4 +36,14 @@ public class Post {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sub_category_id", nullable = false)
     private SubCategory subCategory;
+
+    @OneToMany(mappedBy = "post")
+    private List<PostImage> postImages = new ArrayList<>();
+
+    public List<String> getPostImageUrls() {
+        return postImages.stream()
+                .map(PostImage::getImageUrl)
+                .collect(Collectors.toList());
+    }
+
 }

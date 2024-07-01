@@ -1,6 +1,6 @@
 package com.swmarastro.mykkumiserver.category;
 
-import com.swmarastro.mykkumiserver.post.Post;
+import com.swmarastro.mykkumiserver.post.domain.Post;
 import jakarta.persistence.*;
 import lombok.Getter;
 
