@@ -27,7 +27,7 @@ public class Base64Utils {
             // JSON 문자열을 Base64로 인코딩
             return encoder.encodeToString(jsonString.getBytes());
         } catch (Exception e) {
-            throw new CommonException(ErrorCode.ENCODING_ERROR, "Base64 인코딩 실패했습니다.", e.getMessage());
+            throw new CommonException(ErrorCode.ENCODING_ERROR, "Base64 인코딩 실패했습니다.", obj.getClass().getName()+" 값을 인코딩할 수 없습니다.");
         }
     }
 
@@ -39,7 +39,7 @@ public class Base64Utils {
             // JSON 문자열을 객체로 변환
             return objectMapper.readValue(decodedString, clazz);
         } catch (Exception e) {
-            throw new CommonException(ErrorCode.DECODING_ERROR, "Base64 디코딩 실패했습니다.", e.getMessage());
+            throw new CommonException(ErrorCode.DECODING_ERROR, "Base64 디코딩 실패했습니다.", str+" 값을 디코딩할 수 없습니다.");
         }
 
     }
