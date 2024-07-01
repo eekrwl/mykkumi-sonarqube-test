@@ -1,11 +1,16 @@
 package com.swmarastro.mykkumiserver.global.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.swmarastro.mykkumiserver.global.exception.CommonException;
 import com.swmarastro.mykkumiserver.global.exception.ErrorCode;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import static java.util.Base64.*;
 
+@RequiredArgsConstructor
 public class Base64Utils {
 
     private static final Encoder encoder = getEncoder();
@@ -14,8 +19,11 @@ public class Base64Utils {
 
     public static String encode(Object obj) {
         try {
+            objectMapper.registerModule(new JavaTimeModule());
             // 객체를 JSON 형식의 문자열로 변환
+            System.out.println("여기까지는 오냐");
             String jsonString = objectMapper.writeValueAsString(obj);
+            System.out.println("일단 문자열로 : "+jsonString);
             // JSON 문자열을 Base64로 인코딩
             return encoder.encodeToString(jsonString.getBytes());
         } catch (Exception e) {
@@ -25,6 +33,7 @@ public class Base64Utils {
 
     public static <T> T decode(String str, Class<T> clazz) {
         try {
+            objectMapper.registerModule(new JavaTimeModule());
             // Base64 문자열을 디코딩하여 JSON 문자열로 변환
             String decodedString = new String(decoder.decode(str));
             // JSON 문자열을 객체로 변환
