@@ -21,9 +21,7 @@ public class Base64Utils {
         try {
             objectMapper.registerModule(new JavaTimeModule());
             // 객체를 JSON 형식의 문자열로 변환
-            System.out.println("여기까지는 오냐");
             String jsonString = objectMapper.writeValueAsString(obj);
-            System.out.println("일단 문자열로 : "+jsonString);
             // JSON 문자열을 Base64로 인코딩
             return encoder.encodeToString(jsonString.getBytes());
         } catch (Exception e) {
