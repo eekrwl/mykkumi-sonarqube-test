@@ -2,11 +2,13 @@ package com.swmarastro.mykkumiserver.post.dto;
 
 import com.swmarastro.mykkumiserver.post.domain.Post;
 import com.swmarastro.mykkumiserver.user.User;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
 
 import java.util.List;
 
+@Schema(description = "포스트 하나 DTO")
 @Getter
 @Builder
 public class PostDto {
