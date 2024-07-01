@@ -1,4 +1,4 @@
-package com.swmarastro.mykkumiserver.post;
+package com.swmarastro.mykkumiserver.post.domain;
 
 import com.swmarastro.mykkumiserver.category.SubCategory;
 import com.swmarastro.mykkumiserver.user.User;
@@ -8,6 +8,9 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Entity
