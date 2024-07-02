@@ -35,7 +35,7 @@ public class PostService {
     }
 
     private PostLatestCursor getCursorFromBase64String(String encodedCursor) {
-        if(encodedCursor.isEmpty())
+        if(encodedCursor==null || encodedCursor.isEmpty())
             return PostLatestCursor.of(LocalDateTime.now(), Long.MAX_VALUE);
         return Base64Utils.decode(encodedCursor, PostLatestCursor.class);
     }
