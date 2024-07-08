@@ -15,6 +15,7 @@ env:
   AWS_CODEDEPLOY_GROUP_NAME: ${{ secrets.AWS_CODEDEPLOY_GROUP_NAME }}
   AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
   AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
+  AWS_SG_ID: ${{ secrets.AWS_SG }}
 
 # workflow는 한개 이상의 job을 가지며, 각 job은 여러 step에 따라 단계를 나눌 수 있습니다.
 jobs:
@@ -32,13 +33,56 @@ jobs:
           java-version: '21'
           distribution: 'zulu'
 
+      - name: Get Github action IP # 액션 IP 얻어오기
+        id: ip
+        uses: haythem/public-ip@v1.2
+        continue-on-error: true
+
+      - name: Get Public IP if previous step failed
+        if: failure()
+        run: |
+          public_ip=$(curl -s ifconfig.me)
+          echo "PUBLIC_IP=${public_ip}" >> $GITHUB_ENV
+
+      - name: Setting environment variables # 환경변수 설정
+        run: |
+          echo "AWS_DEFAULT_REGION=${{ env.AWS_REGION }}" >> $GITHUB_ENV
+          echo "AWS_SG_NAME=launch-wizard-2" >> $GITHUB_ENV
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ env.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ env.AWS_SECRET_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Add Github Actions IP to Security group
+        run: | # 명령어로 시큐리티 그룹 인바운드 임시 설정
+          ip_address="${{ steps.ip.outputs.ipv4 }}"
+          if [ -z "$ip_address" ]; then
+            ip_address="${{ env.PUBLIC_IP }}"
+          fi
+          aws ec2 authorize-security-group-ingress --group-id ${{ env.AWS_SG_ID }} --protocol tcp --port 3306 --cidr ${ip_address}/32 
+
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
         shell: bash
 
-      - name: Build with Gradle
-        run: ./gradlew build -x test
+      - name: Build with Gradle 
+        run: ./gradlew build
         shell: bash
+
+      - name: Remove Github Actions IP from security group
+        run: | # 작업이 끝났으니 다시 인바운드 룰에서 제거
+          ip_address="${{ steps.ip.outputs.ipv4 }}"
+          if [ -z "$ip_address" ]; then
+            ip_address="${{ env.PUBLIC_IP }}"
+          fi
+          aws ec2 revoke-security-group-ingress --group-id ${{ env.AWS_SG_ID }} --protocol tcp --port 3306 --cidr ${ip_address}/32
+        env:
+          AWS_ACCESS_KEY_ID: ${{ env.AWS_ACCESS_KEY }}
+          AWS_SECRET_ACCESS_KEY: ${{ env.AWS_SECRET_KEY }}
+          AWS_DEFAULT_REGION: ${{ env.AWS_REGION }}
 
   deploy:
     name: CD
@@ -59,20 +103,56 @@ jobs:
         run: chmod +x ./gradlew
         shell: bash
 
-      - name: Build with Gradle
-        run: ./gradlew build -x test
-        shell: bash
+      - name: Get Github action IP # 액션 IP 얻어오기
+        id: ip
+        uses: haythem/public-ip@v1.2
+        continue-on-error: true
 
-      - name: Make zip file
-        run: zip -r ./$GITHUB_SHA.zip .
-        shell: bash
+      - name: Get Public IP if previous step failed
+        if: failure()
+        run: |
+          public_ip=$(curl -s ifconfig.me)
+          echo "PUBLIC_IP=${public_ip}" >> $GITHUB_ENV
+
+      - name: Setting environment variables # 환경변수 설정
+        run: |
+          echo "AWS_DEFAULT_REGION=${{ env.AWS_REGION }}" >> $GITHUB_ENV
+          echo "AWS_SG_NAME=launch-wizard-2" >> $GITHUB_ENV
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
+          aws-access-key-id: ${{ env.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ env.AWS_SECRET_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+        
+      - name: Add Github Actions IP to Security group
+        run: | # 명령어로 시큐리티 그룹 인바운드 임시 설정
+          ip_address="${{ steps.ip.outputs.ipv4 }}"
+          if [ -z "$ip_address" ]; then
+            ip_address="${{ env.PUBLIC_IP }}"
+          fi
+          aws ec2 authorize-security-group-ingress --group-id ${{ env.AWS_SG_ID }} --protocol tcp --port 3306 --cidr ${ip_address}/32
+      
+      - name: Build with Gradle
+        run: ./gradlew build
+        shell: bash
+
+      - name: Remove Github Actions IP from security group
+        run: | # 작업이 끝났으니 다시 인바운드 룰에서 제거
+          ip_address="${{ steps.ip.outputs.ipv4 }}"
+          if [ -z "$ip_address" ]; then
+            ip_address="${{ env.PUBLIC_IP }}"
+          fi
+          aws ec2 revoke-security-group-ingress --group-id ${{ env.AWS_SG_ID }} --protocol tcp --port 3306 --cidr ${ip_address}/32
+        env:
+          AWS_ACCESS_KEY_ID: ${{ env.AWS_ACCESS_KEY }}
+          AWS_SECRET_ACCESS_KEY: ${{ env.AWS_SECRET_KEY }}
+          AWS_DEFAULT_REGION: ${{ env.AWS_REGION }}
+
+      - name: Make zip file
+        run: zip -r ./$GITHUB_SHA.zip .
+        shell: bash
 
       # script files 복사
       - name: Copy script
