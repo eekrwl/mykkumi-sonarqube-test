@@ -28,7 +28,8 @@ public class JwtFilter extends OncePerRequestFilter {
             return;
         }
         final String accessToken = getAccessTokenFromHttpServletRequest(request);
-        jwtProvider.validateAccessToken(accessToken);
+        if(!jwtProvider.validToken(accessToken)) //TODO 이렇게 처리해도되는지
+            return;
         final Long userId = jwtProvider.getSubject(accessToken);
         setAuthentication(request, userId);
         filterChain.doFilter(request, response);

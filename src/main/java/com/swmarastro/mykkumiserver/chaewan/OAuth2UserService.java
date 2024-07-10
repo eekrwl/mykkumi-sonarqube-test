@@ -1,3 +1,4 @@
+/*
 package com.swmarastro.mykkumiserver.chaewan;
 
 import org.springframework.security.core.GrantedAuthority;
@@ -29,3 +30,4 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
         return new DefaultOAuth2User(authorities, oAuth2User.getAttributes(), userNameAttributeName);
     }
 }
+*/

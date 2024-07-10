@@ -7,22 +7,28 @@ import com.swmarastro.mykkumiserver.auth.jwt.JwtProvider;
 import com.swmarastro.mykkumiserver.auth.oauth.dto.CreateOauthUserRequest;
 import com.swmarastro.mykkumiserver.user.User;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
+import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.Duration;
+
+@Slf4j
+@Service
 @RequiredArgsConstructor
 public class KakaoService {
 
-    @Value("${kakao.client-id}")
+    @Value("${spring.security.oauth2.client.registration.kakao.client-id}")
     private String KAKAO_CLIENT_ID;
 
-    @Value("${kakao.client-secret}")
+    @Value("${spring.security.oauth2.client.registration.kakao.client-secret}")
     private String KAKAO_CLIENT_SECRET;
 
-    @Value("${kakao.redirect-uri}")
+    @Value("${spring.security.oauth2.client.registration.kakao.redirect-uri}")
     private String KAKAO_REDIRECT_URI;
 
     private final String KAKAO_TOKEN_URL = "https://kauth.kakao.com/oauth/token";
@@ -35,6 +41,8 @@ public class KakaoService {
 
     //카카오 엑세스 토큰으로 사용자 정보 받아오기
     public CreateOauthUserRequest getKakaoInfo(String accessToken) throws JsonProcessingException {
+        log.info("여기까지는 오냐..");
+        log.info("access token : " + accessToken);
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + accessToken);
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -59,6 +67,7 @@ public class KakaoService {
         return null;
     }
 
+    /*
     public String getKakaoAccessToken(String code) throws JsonProcessingException { //인가코드로 카카오 엑세스 토큰 받아오기
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -93,11 +102,11 @@ public class KakaoService {
         } else {
             return null; //나중에 제대로
         }
-    }
+    }*/
 
     public HttpHeaders getLoginHeader(User user) {
         //액세스 토큰 생성 -> 패스에 액세스 토큰을 추가
-        String accessToken = jwtProvider.generateToken(user.getId(), ACCESS_TOKEN_EXPIRE_TIME/*ACCESS_TOKEN_DURATION*/);
+        String accessToken = jwtProvider.generateToken(user.getId(), Duration.ofMinutes(15));
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + accessToken);
         return headers;

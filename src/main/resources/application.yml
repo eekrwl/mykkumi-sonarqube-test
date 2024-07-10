@@ -14,6 +14,7 @@ spring:
       - 'aws-secretsmanager:dev/mykkumi/mysql'
       - 'aws-secretsmanager:dev/mykkumi/s3'
       - 'aws-secretsmanager:dev/mykkumi/jwt'
+      - 'aws-secretsmanager:dev/mykkumi/oauth'
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://${db_host}:${db_port}/dbMykkumiDev?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
@@ -41,8 +42,8 @@ spring:
             user-name-attribute: id
         registration:
           kakao:
-            client-id: 3b110ecfb5f6c06b120d9f2e3b5dc4cd
-            client-secret: lBNQ1cbhjjnYVUZY3d0YDhO6XCayTatT
+            client-id: ${kakao_client_id}
+            client-secret: ${kakao_client_secret}
             client-authentication-method: client_secret_post
             scope:
               - profile_nickname
@@ -80,3 +81,4 @@ springdoc:
 jwt:
   issuer: ${jwt_issuer}
   secret_key: ${jwt_secret_key}
+  access-token-expired-time: 3600000

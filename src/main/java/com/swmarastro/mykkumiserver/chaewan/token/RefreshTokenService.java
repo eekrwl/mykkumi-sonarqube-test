@@ -1,5 +1,7 @@
+/*
 package com.swmarastro.mykkumiserver.chaewan.token;
 
+import com.swmarastro.mykkumiserver.auth.token.RefreshToken;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,3 +15,4 @@ public class RefreshTokenService {
                 .orElseThrow(() -> new IllegalArgumentException("Unexpected token"));
     }
 }
+*/

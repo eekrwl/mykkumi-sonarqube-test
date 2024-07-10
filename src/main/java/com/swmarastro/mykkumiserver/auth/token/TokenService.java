@@ -1,6 +1,6 @@
-package com.swmarastro.mykkumiserver.chaewan.token;
+package com.swmarastro.mykkumiserver.auth.token;
 
-import com.swmarastro.mykkumiserver.chaewan.jwt.TokenProvider;
+import com.swmarastro.mykkumiserver.auth.jwt.JwtProvider;
 import com.swmarastro.mykkumiserver.user.User;
 import com.swmarastro.mykkumiserver.user.UserService;
 import lombok.RequiredArgsConstructor;
@@ -12,17 +12,17 @@ import java.time.Duration;
 @Service
 public class TokenService {
 
-    private final TokenProvider tokenProvider;
+    private final JwtProvider jwtProvider;
     private final RefreshTokenService refreshTokenService;
     private final UserService userService;
 
     public String createNewAccessToken(String refreshToken) throws IllegalAccessException {
-        if (!tokenProvider.validToken(refreshToken)) {
+        if (!jwtProvider.validToken(refreshToken)) {
             throw new IllegalAccessException("Unexpected token");
         }
 
         Long userId = refreshTokenService.findByRefreshToken(refreshToken).getUserId();
         User user = userService.findById(userId);
-        return tokenProvider.generateToken(user, Duration.ofHours(2));
+        return jwtProvider.generateToken(user.getId(), Duration.ofHours(2));
     }
 }
