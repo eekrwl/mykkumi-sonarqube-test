@@ -30,6 +30,8 @@ public class PostService {
         List<PostDto> posts = getPostsByCursorAndLimit(cursor, limit);
 
         Long lastId = getLastIdFromPostList(posts);
+        if(postRepository.countPostsByOrderByIdDesc(lastId)==0L) //다음에 조회할 내용 없음
+            return PostListResponse.end(posts);
         PostLatestCursor nextCursor = PostLatestCursor.of(cursor.getStartedAt(), lastId);
         return PostListResponse.of(posts, Base64Utils.encode(nextCursor));
     }

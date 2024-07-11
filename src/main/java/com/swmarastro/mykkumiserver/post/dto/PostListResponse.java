@@ -21,4 +21,12 @@ public class PostListResponse {
                 .cursor(cursor)
                 .build();
     }
+
+    //포스트 끝
+    public static PostListResponse end(List<PostDto> posts) {
+        return PostListResponse.builder()
+                .posts(posts)
+                .cursor("")
+                .build();
+    }
 }
