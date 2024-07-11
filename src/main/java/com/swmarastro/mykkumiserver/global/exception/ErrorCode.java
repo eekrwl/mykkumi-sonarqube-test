@@ -13,8 +13,13 @@ public enum ErrorCode {
     DECODING_ERROR(HttpStatus.BAD_REQUEST),
     INVALID_VALUE(HttpStatus.BAD_REQUEST),
 
+    //401 UNAUTHORIZED
+    TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED),
+    INVALID_TOKEN(HttpStatus.UNAUTHORIZED),
+
     // 404 NOT FOUND
     NOT_FOUND(HttpStatus.NOT_FOUND),
+
     ;
 
     private final HttpStatus httpStatus;
