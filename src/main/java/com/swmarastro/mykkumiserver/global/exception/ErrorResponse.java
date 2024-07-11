@@ -20,4 +20,12 @@ public class ErrorResponse {
                 .detail(e.getDetail())
                 .build();
     }
+
+    public static ErrorResponse from(Exception e) {
+        return ErrorResponse.builder()
+                .errorCode(ErrorCode.INTERNAL_SERVER_ERROR.getErrorCodeName())
+                .message("알 수 없는 에러입니다. 잠시 후 시도해주세요.")
+                .detail("서버 에러입니다.")
+                .build();
+    }
 }
