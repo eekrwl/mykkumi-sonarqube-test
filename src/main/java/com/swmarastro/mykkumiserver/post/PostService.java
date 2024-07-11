@@ -22,14 +22,16 @@ public class PostService {
     //TODO 이름에 최신순이라고 알려줘야할것 같다. 고민해보고 이름 고치기
     public PostListResponse getInfiniteScrollPosts(String encodedCursor, Integer limit) {
 
-        if (limit <= 0)
-            throw new CommonException(ErrorCode.INVALID_VALUE, "limit 값이 올바르지 않습니다.", "limit 값은 limit>0 이어야 합니다.");
+        if (limit <= 0 || limit > 10)
+            throw new CommonException(ErrorCode.INVALID_VALUE, "limit 값이 올바르지 않습니다.", "limit 값은 1<=limit<=10 이어야 합니다.");
 
         //TODO Cursor 인터페이스 하나 놓고 상속해서 커스텀하여 사용할 수도 있을 것 같다. 추후 구조 수정
         PostLatestCursor cursor = getCursorFromBase64String(encodedCursor);
         List<PostDto> posts = getPostsByCursorAndLimit(cursor, limit);
 
         Long lastId = getLastIdFromPostList(posts);
+        if(postRepository.countPostsByOrderByIdDesc(lastId)==0L) //다음에 조회할 내용 없음
+            return PostListResponse.end(posts);
         PostLatestCursor nextCursor = PostLatestCursor.of(cursor.getStartedAt(), lastId);
         return PostListResponse.of(posts, Base64Utils.encode(nextCursor));
     }

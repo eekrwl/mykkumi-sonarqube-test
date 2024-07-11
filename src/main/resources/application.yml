@@ -5,6 +5,7 @@ spring:
     import:
       - 'aws-secretsmanager:dev/mykkumi/mysql'
       - 'aws-secretsmanager:dev/mykkumi/s3'
+      - 'aws-secretsmanager:dev/mykkumi/jwt'
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://${db_host}:${db_port}/dbMykkumiDev?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
@@ -45,3 +46,7 @@ springdoc:
     disable-swagger-default-url: true
     display-request-duration: true
     operations-sorter: alpha
+
+jwt:
+  issuer: ${jwt_issuer}
+  secret_key: ${jwt_secret_key}
