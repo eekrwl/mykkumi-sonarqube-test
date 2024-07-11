@@ -23,7 +23,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException, ServletException, IOException {
-        if (request.getHeader(AUTHORIZATION) == null) {
+        if (request.getHeader(AUTHORIZATION) == null) { //TODO 정체 물어보기
             filterChain.doFilter(request, response);
             return;
         }

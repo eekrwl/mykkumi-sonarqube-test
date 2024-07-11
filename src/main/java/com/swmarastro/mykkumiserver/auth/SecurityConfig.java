@@ -32,3 +32,7 @@ public class SecurityConfig {
     }
 }
 
+//어떤 path에 필터를 거칠건가
+//홈이나 로그인 같은 부분은 그냥 다 열어줘야됨
+//path별로 ROLE을 지정해줄 수 있다??????
+//어떤 api는 반드시 USER라는 ROLE이 있어야 패스가능

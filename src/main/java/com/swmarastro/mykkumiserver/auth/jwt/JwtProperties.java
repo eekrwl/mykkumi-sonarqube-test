@@ -1,4 +1,4 @@
-package com.swmarastro.mykkumiserver.chaewan;
+package com.swmarastro.mykkumiserver.auth.jwt;
 
 import lombok.Getter;
 import lombok.Setter;

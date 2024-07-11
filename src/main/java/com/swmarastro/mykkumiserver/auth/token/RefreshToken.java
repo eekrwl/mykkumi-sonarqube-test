@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
+import java.nio.channels.FileLock;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -24,7 +25,10 @@ public class RefreshToken {
     @Column(name = "refresh_token_id", updatable = false)
     private Long id;
 
-    private Long userId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
     private String refreshToken;
     private LocalDateTime token_expiry;
 
@@ -34,9 +38,9 @@ public class RefreshToken {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
-    public static RefreshToken of(Long userId, String token) {
+    public static RefreshToken of(User user, String token) {
         return RefreshToken.builder()
-                .userId(userId)
+                .user(user)
                 .refreshToken(token)
                 .build();
     }

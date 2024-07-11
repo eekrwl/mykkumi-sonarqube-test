@@ -1,9 +1,10 @@
 package com.swmarastro.mykkumiserver.auth;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.swmarastro.mykkumiserver.auth.oauth.OAuthProvider;
 import com.swmarastro.mykkumiserver.auth.oauth.dto.SigninRequest;
 import com.swmarastro.mykkumiserver.auth.oauth.dto.SigninResponse;
-import com.swmarastro.mykkumiserver.auth.oauth.service.OAuthService;
+import com.swmarastro.mykkumiserver.auth.oauth.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -16,16 +17,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1")
-public class OAuthController {
+public class AuthController {
 
-    private final OAuthService oAuthService;
+    private final AuthService authService;
 
     @PostMapping("/signin/kakao")
-    public ResponseEntity<SigninResponse> signinKakao(@RequestBody SigninRequest request) {
-        log.info("api 들어옴");
-        SigninResponse signin = oAuthService.signin(request);
+    public ResponseEntity<SigninResponse> signinKakao(@RequestBody SigninRequest request) throws JsonProcessingException {
+        SigninResponse signinResponse = authService.signin(request, OAuthProvider.KAKAO);
         return ResponseEntity.ok()
-                .body(signin);
+                .body(signinResponse);
     }
 
 }

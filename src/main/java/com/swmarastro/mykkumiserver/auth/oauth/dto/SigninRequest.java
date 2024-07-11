@@ -13,6 +13,6 @@ public class SigninRequest {
 
     private String refreshToken;
     private String accessToken;
-    //private LocalDateTime refreshTokenExpiresAt;
-    //private LocalDateTime accessTokenExpiresAt;
+    private LocalDateTime refreshTokenExpiresAt;
+    private LocalDateTime accessTokenExpiresAt;
 }
