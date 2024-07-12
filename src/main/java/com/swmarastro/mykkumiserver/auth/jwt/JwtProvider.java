@@ -21,15 +21,19 @@ public class JwtProvider {
 
     private final JwtProperties jwtProperties;
 
+    public String generateToken(User user, Duration duration) {
+        Date now = new Date();
+        return makeToken(user, new Date(now.getTime() + duration.toMillis()));
+    }
+
     /**
      * 토큰 생성 메서드
      */
-    public String generateToken(User user, Duration expireTime) {
-        final Date now = new Date();
-        final Date expiry = new Date(now.getTime() + expireTime.toMillis());
+    private String makeToken(User user, Date expiry) {
+        Date now = new Date();
         return Jwts.builder()
                 .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
-                .setSubject(String.valueOf(user.getId())) //토큰이름: userId
+                .setSubject(String.valueOf(user.getUuid())) //토큰이름: user uuid
                 .setIssuedAt(now)
                 .setExpiration(expiry)
                 .signWith(getSigningKey(jwtProperties.getSecretKey()), SignatureAlgorithm.HS256)
@@ -54,12 +58,21 @@ public class JwtProvider {
     }
 
     /**
-     * 토큰 subject 가져오기(userId)
+     * 토큰 subject 가져오기(user uuid)
      */
-    public Long getSubject(String token) {
-        return Long.valueOf(getJwtParser().parseClaimsJws(token)
+    public String getSubject(String token) {
+        return getJwtParser().parseClaimsJws(token)
                 .getBody()
-                .getSubject());
+                .getSubject();
+    }
+
+    /**
+     * 토큰 만료시각 가져오기
+     */
+    public Date getExpiry(String token) {
+        return getJwtParser().parseClaimsJws(token)
+                .getBody()
+                .getExpiration();
     }
 
     private JwtParser getJwtParser() {
