@@ -22,7 +22,7 @@ public class RefreshToken {
     public Long id;
 
     @Column(updatable = false, nullable = false, unique = true, insertable = false)
-    private UUID uuid;
+    private String uuid;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -38,7 +38,7 @@ public class RefreshToken {
         return RefreshToken.builder()
                 .user(user)
                 .refreshToken(token)
-                .uuid(UUID.randomUUID())
+                .uuid(UUID.randomUUID().toString())
                 .tokenExpiry(expiry)
                 .createdAt(LocalDateTime.now())
                 .build();

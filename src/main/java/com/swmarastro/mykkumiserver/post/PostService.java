@@ -27,11 +27,13 @@ public class PostService {
 
         //TODO Cursor 인터페이스 하나 놓고 상속해서 커스텀하여 사용할 수도 있을 것 같다. 추후 구조 수정
         PostLatestCursor cursor = getCursorFromBase64String(encodedCursor);
-        List<PostDto> posts = getPostsByCursorAndLimit(cursor, limit);
+        List<PostDto> posts = getPostsByCursorAndLimit(cursor, limit + 1);
 
-        Long lastId = getLastIdFromPostList(posts);
-        if(postRepository.countPostsByOrderByIdDesc(lastId)==0L) //다음에 조회할 내용 없음
+        if (posts.size() < limit + 1) { //다음에 조회할 내용 없음
             return PostListResponse.end(posts);
+        }
+        posts.removeLast();
+        Long lastId = getLastIdFromPostList(posts);
         PostLatestCursor nextCursor = PostLatestCursor.of(cursor.getStartedAt(), lastId);
         return PostListResponse.of(posts, Base64Utils.encode(nextCursor));
     }
