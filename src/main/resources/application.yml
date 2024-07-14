@@ -6,6 +6,7 @@ spring:
       - 'aws-secretsmanager:dev/mykkumi/mysql'
       - 'aws-secretsmanager:dev/mykkumi/s3'
       - 'aws-secretsmanager:dev/mykkumi/jwt'
+      - 'aws-secretsmanager:dev/mykkumi/oauth'
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://${db_host}:${db_port}/dbMykkumiDev?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
@@ -19,6 +20,26 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
+
+  security:
+    oauth2:
+      client:
+        provider:
+          kakao:
+            authorization-uri: https://kauth.kakao.com/oauth/authorize
+            token-uri: https://kauth.kakao.com/oauth/token
+            user-info-uri: https://kapi.kakao.com/v2/user/me
+            user-name-attribute: id
+        registration:
+          kakao:
+            client-id: ${kakao_client_id}
+            client-secret: ${kakao_client_secret}
+            client-authentication-method: client_secret_post
+            scope:
+              - account_email
+            client-name: Kakao
+            authorization-grant-type: authorization_code
+            redirect-uri: http://localhost:8080/login/oauth2/code/kakao
 
 server:
   port: 8080
