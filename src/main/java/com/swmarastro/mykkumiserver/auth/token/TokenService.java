@@ -31,7 +31,7 @@ public class TokenService {
             throw new CommonException(ErrorCode.INVALID_TOKEN, "유효하지 않은 토큰입니다.", "유효하지 않은 토큰입니다.");
         }
         //refresh token 발급
-        User user = userService.getUserByUuid(jwtProvider.getSubject(refreshToken));
+        User user = userService.getUserByUuid(UUID.fromString(jwtProvider.getSubject(refreshToken)));
         String newRefreshToken = createRefreshToken(user);
 
         //access token 발급
@@ -75,7 +75,7 @@ public class TokenService {
         refreshTokenRepository.findByUuid(uuid)
                 .orElseThrow(() -> new CommonException(ErrorCode.INVALID_TOKEN, "유효하지 않은 토큰입니다.", "유효하지 않은 토큰입니다."));
         //토큰에서 유저 uuid 추출
-        String Uuid = jwtProvider.getSubject(refreshToken);
+        UUID Uuid = UUID.fromString(jwtProvider.getSubject(refreshToken));
         //해당 유저 존재하는지 확인
         User user = userService.getUserByUuid(Uuid);
         return true;

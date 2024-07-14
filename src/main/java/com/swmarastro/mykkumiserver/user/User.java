@@ -13,7 +13,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     private Long id;
-    @Column(updatable = false, nullable = false, unique = true, insertable = false)
+    @Column(updatable = false, nullable = false, unique = true, columnDefinition = "CHAR(36)")
     private UUID uuid;
     @Column(nullable = false)
     private String nickname;
@@ -21,4 +21,11 @@ public class User {
     private String email;
     private String introduction;
     private String profileImage;
+
+    @PrePersist
+    public void prePersist() {
+        if (this.uuid == null) {
+            this.uuid = UUID.randomUUID();
+        }
+    }
 }
