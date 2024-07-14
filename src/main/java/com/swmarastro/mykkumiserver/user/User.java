@@ -1,12 +1,19 @@
 package com.swmarastro.mykkumiserver.user;
 
+import com.swmarastro.mykkumiserver.auth.OAuthProvider;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
 @Getter
 @Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class User {
 
     @Id
@@ -22,10 +29,20 @@ public class User {
     private String introduction;
     private String profileImage;
 
+    @Enumerated(value = EnumType.STRING)
+    private OAuthProvider provider;
+
     @PrePersist
     public void prePersist() {
         if (this.uuid == null) {
             this.uuid = UUID.randomUUID();
         }
+    }
+
+    public static User of(OAuthProvider provider, String email) {
+        return User.builder()
+                .provider(provider)
+                .email(email)
+                .build();
     }
 }
