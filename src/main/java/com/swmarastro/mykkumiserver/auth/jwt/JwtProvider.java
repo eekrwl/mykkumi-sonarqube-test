@@ -13,6 +13,7 @@ import java.security.Key;
 import java.time.Duration;
 import java.util.Base64;
 import java.util.Date;
+import java.util.UUID;
 
 @Getter
 @Component
@@ -21,13 +22,33 @@ public class JwtProvider {
 
     private final JwtProperties jwtProperties;
 
+    public String generateToken(User user, Duration duration, UUID uuid) {
+        Date now = new Date();
+        return makeToken(user, new Date(now.getTime() + duration.toMillis()),uuid);
+    }
+
     public String generateToken(User user, Duration duration) {
         Date now = new Date();
         return makeToken(user, new Date(now.getTime() + duration.toMillis()));
     }
 
     /**
-     * 토큰 생성 메서드
+     * 토큰 생성 메서드 with token uuid
+     */
+    private String makeToken(User user, Date expiry, UUID uuid) {
+        Date now = new Date();
+        return Jwts.builder()
+                .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
+                .setSubject(String.valueOf(user.getUuid())) //토큰이름: user uuid
+                .setIssuedAt(now)
+                .setExpiration(expiry)
+                .claim("uuid", uuid)
+                .signWith(getSigningKey(jwtProperties.getSecretKey()), SignatureAlgorithm.HS256)
+                .compact();
+    }
+
+    /**
+     * 토큰 생성 메서드 without token uuid
      */
     private String makeToken(User user, Date expiry) {
         Date now = new Date();
@@ -73,6 +94,11 @@ public class JwtProvider {
         return getJwtParser().parseClaimsJws(token)
                 .getBody()
                 .getExpiration();
+    }
+
+    public UUID getUuidFromClaim(String token) {
+        return getJwtParser().parseClaimsJws(token)
+                .getBody().get("uuid", UUID.class);
     }
 
     private JwtParser getJwtParser() {

@@ -34,11 +34,11 @@ public class RefreshToken {
     @CreatedDate
     private LocalDateTime createdAt;
 
-    public static RefreshToken of(User user, String token, Date expiry) {
+    public static RefreshToken of(User user, String token, Date expiry, UUID uuid) {
         return RefreshToken.builder()
                 .user(user)
                 .refreshToken(token)
-                .uuid(UUID.randomUUID())
+                .uuid(uuid)
                 .tokenExpiry(expiry)
                 .createdAt(LocalDateTime.now())
                 .build();
