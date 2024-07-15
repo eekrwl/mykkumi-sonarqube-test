@@ -6,9 +6,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.UUID;
 
+@Slf4j
 @Getter
 @Entity
 @Builder
@@ -20,9 +22,8 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     private Long id;
-    @Column(updatable = false, nullable = false, unique = true, columnDefinition = "CHAR(36)")
+    @Column(updatable = false, nullable = false, unique = true, columnDefinition = "BINARY(16)")
     private UUID uuid;
-    @Column(nullable = false)
     private String nickname;
     @Column(nullable = false)
     private String email;
@@ -32,17 +33,11 @@ public class User {
     @Enumerated(value = EnumType.STRING)
     private OAuthProvider provider;
 
-    @PrePersist
-    public void prePersist() {
-        if (this.uuid == null) {
-            this.uuid = UUID.randomUUID();
-        }
-    }
-
     public static User of(OAuthProvider provider, String email) {
         return User.builder()
                 .provider(provider)
                 .email(email)
+                .uuid(UUID.randomUUID())
                 .build();
     }
 }

@@ -6,6 +6,8 @@ import com.swmarastro.mykkumiserver.global.exception.ErrorCode;
 import com.swmarastro.mykkumiserver.user.User;
 import com.swmarastro.mykkumiserver.user.UserService;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -16,6 +18,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class TokenService {
 
+    private static final Logger log = LoggerFactory.getLogger(TokenService.class);
     private final JwtProvider jwtProvider;
     private final RefreshTokenRepository refreshTokenRepository;
     private final UserService userService;
@@ -26,14 +29,14 @@ public class TokenService {
     /**
      * refresh token으로 user의 access token 재발급
      */
-    public String createNewAccessTokens(String refreshToken) {
+    public String createNewAccessToken(String refreshToken) {
         if (!isValidToken(refreshToken)) {
             throw new CommonException(ErrorCode.INVALID_TOKEN, "유효하지 않은 토큰입니다.", "유효하지 않은 토큰입니다.");
         }
         //토큰에서 유저 uuid 추출
-        UUID Uuid = UUID.fromString(jwtProvider.getSubject(refreshToken));
+        UUID uuid = UUID.fromString(jwtProvider.getSubject(refreshToken));
         //유저 가져오기
-        User user = userService.getUserByUuid(Uuid);
+        User user = userService.getUserByUuid(uuid);
         return jwtProvider.generateToken(user, ACCESS_TOKEN_DURATION);
     }
 
@@ -60,7 +63,7 @@ public class TokenService {
         }
 
         //claim에서 refresh token의 uuid 가져오기
-        UUID uuid = jwtProvider.getUuidFromClaim(refreshToken);
+        UUID uuid = UUID.fromString(jwtProvider.getUuidFromClaim(refreshToken));
 
         //DB에 존재하는지 확인
         refreshTokenRepository.findByUuid(uuid)
