@@ -42,7 +42,7 @@ public class JwtProvider {
                 .setSubject(String.valueOf(user.getUuid())) //토큰이름: user uuid
                 .setIssuedAt(now)
                 .setExpiration(expiry)
-                .claim("uuid", uuid)
+                .claim("uuid", uuid.toString())
                 .signWith(getSigningKey(jwtProperties.getSecretKey()), SignatureAlgorithm.HS256)
                 .compact();
     }
@@ -96,9 +96,9 @@ public class JwtProvider {
                 .getExpiration();
     }
 
-    public UUID getUuidFromClaim(String token) {
+    public String getUuidFromClaim(String token) {
         return getJwtParser().parseClaimsJws(token)
-                .getBody().get("uuid", UUID.class);
+                .getBody().get("uuid").toString();
     }
 
     private JwtParser getJwtParser() {
