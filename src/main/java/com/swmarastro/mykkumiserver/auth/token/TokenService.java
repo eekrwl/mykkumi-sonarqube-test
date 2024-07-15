@@ -24,32 +24,23 @@ public class TokenService {
     private final Duration REFRESH_TOKEN_DURATION = Duration.ofDays(90);
 
     /**
-     * refresh token으로 refresh token, access token 재발급
+     * refresh token으로 user의 access token 재발급
      */
-    public AuthTokensDTO createNewTokens(String refreshToken) {
+    public String createNewAccessTokens(String refreshToken) {
         if (!isValidToken(refreshToken)) {
             throw new CommonException(ErrorCode.INVALID_TOKEN, "유효하지 않은 토큰입니다.", "유효하지 않은 토큰입니다.");
         }
-        //refresh token 발급
-        User user = userService.getUserByUuid(UUID.fromString(jwtProvider.getSubject(refreshToken)));
-        String newRefreshToken = createRefreshToken(user);
-
-        //access token 발급
-        String newAccessToken = createNewAccessToken(user, newRefreshToken);
-        return AuthTokensDTO.of(newRefreshToken, newAccessToken);
-    }
-
-    /**
-     * refresh token으로 access token 생성
-     */
-    private String createNewAccessToken(User user, String refreshToken) {
+        //토큰에서 유저 uuid 추출
+        UUID Uuid = UUID.fromString(jwtProvider.getSubject(refreshToken));
+        //유저 가져오기
+        User user = userService.getUserByUuid(Uuid);
         return jwtProvider.generateToken(user, ACCESS_TOKEN_DURATION);
     }
 
     /**
      * refresh token 생성
      */
-    private String createRefreshToken(User user) {
+    public String createRefreshToken(User user) {
         UUID tokenUuid = UUID.randomUUID();
         //user의 refresh token 생성
         String token = jwtProvider.generateToken(user, REFRESH_TOKEN_DURATION, tokenUuid);
