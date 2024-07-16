@@ -21,7 +21,7 @@ public class RefreshToken {
     @Column(name = "refresh_token_id", updatable = false, nullable = false)
     public Long id;
 
-    @Column(updatable = false, nullable = false, unique = true, insertable = false)
+    @Column(updatable = false, unique = true)
     private UUID uuid;
 
     @ManyToOne(fetch = FetchType.LAZY)
