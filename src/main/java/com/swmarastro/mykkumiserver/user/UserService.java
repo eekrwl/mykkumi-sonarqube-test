@@ -28,4 +28,5 @@ public class UserService {
     public Optional<User> getUserByEmailAndProvider(String email, OAuthProvider provider) {
         return userRepository.findByEmailAndProvider(email, provider);
     }
+
 }
