@@ -17,6 +17,8 @@ public class SubCategory {
     private Long id;
     @Column(nullable = false)
     private String name;
+    @Column(nullable = false)
+    private Integer listOrder;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
