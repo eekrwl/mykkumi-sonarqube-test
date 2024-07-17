@@ -33,7 +33,7 @@ public class LoginUserArgumentResolver implements HandlerMethodArgumentResolver 
 
         HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
         String authorization = request.getHeader("Authorization");
-        if (authorization != null && authorization.startsWith("Bearer ")) { //TODO Bearer를 전에 토큰 줄때도 붙여서 줘야됐나?
+        if (authorization != null && authorization.startsWith("Bearer ")) {
             String token = authorization.substring(7);
             if(tokenService.isValidToken(token)) { //유효한 토큰인지 검증
                 UUID userUuid = tokenService.getUserUuidFromToken(token);
