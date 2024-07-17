@@ -16,4 +16,7 @@ public class S3properties {
 
     @Value("{$cloud.aws.region}")
     private String region;
+
+    @Value("{$cloud.aws.s3.bucket")
+    private String bucket;
 }
