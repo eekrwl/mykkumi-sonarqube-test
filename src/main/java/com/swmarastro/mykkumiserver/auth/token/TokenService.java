@@ -30,7 +30,7 @@ public class TokenService {
      * refresh token으로 user의 access token 재발급
      */
     public String createNewAccessToken(String refreshToken) {
-        if (!isValidToken(refreshToken)) {
+        if (!isValidRefreshToken(refreshToken)) {
             throw new CommonException(ErrorCode.INVALID_TOKEN, "유효하지 않은 토큰입니다.", "유효하지 않은 토큰입니다.");
         }
         //토큰에서 유저 uuid 추출
@@ -56,7 +56,7 @@ public class TokenService {
     /**
      * 유효한 refresh token인지, 사용자는 실제로 존재하는지 검증
      */
-    public boolean isValidToken(String refreshToken) {
+    public boolean isValidRefreshToken(String refreshToken) {
         //유효한 토큰인지 확인
         if(!jwtProvider.validToken(refreshToken)) {
             throw new CommonException(ErrorCode.INVALID_TOKEN, "유효하지 않은 토큰입니다.", "유효하지 않은 토큰입니다.");
@@ -73,6 +73,21 @@ public class TokenService {
         //해당 유저 존재하는지 확인
         User user = userService.getUserByUuid(Uuid);
         return true;
+    }
+
+    /**
+     * 유효한 엑세스 토큰인지 검증
+     */
+    public boolean isValidToken(String token) {
+        //유효한 토큰인지 확인
+        if(!jwtProvider.validToken(token)) {
+            throw new CommonException(ErrorCode.INVALID_TOKEN, "유효하지 않은 토큰입니다.", "유효하지 않은 토큰입니다.");
+        }
+        return true;
+    }
+
+    public UUID getUserUuidFromToken(String token) {
+        return UUID.fromString(jwtProvider.getSubject(token));
     }
 
 }
