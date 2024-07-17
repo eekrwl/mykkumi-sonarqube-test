@@ -30,6 +30,7 @@ public class UserController {
 
     @PatchMapping("/users")
     public ResponseEntity<MeResponse> updateUser(@Login User loginUser, @Valid @ModelAttribute UpdateUserRequest updateUserRequest) {
+        //TODO 닉네임 유효성 검사에서 걸렸을 때, 에러메시지 만들어주기
         if (loginUser == null) {
             throw new CommonException(ErrorCode.INVALID_TOKEN, "로그인을 해주세요", "올바른 토큰이 아니거나 토큰이 존재하지 않습니다.");
         }
