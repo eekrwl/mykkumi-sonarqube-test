@@ -16,7 +16,8 @@ public class Category {
     private Long id;
     @Column(nullable = false)
     private String name;
-    private String description;
+    @Column(nullable = false)
+    private Integer listOrder;
 
     @OneToMany(mappedBy = "category")
     private List<SubCategory> subCategories = new ArrayList<>();
