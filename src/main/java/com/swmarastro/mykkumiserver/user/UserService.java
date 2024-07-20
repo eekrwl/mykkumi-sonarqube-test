@@ -1,6 +1,9 @@
 package com.swmarastro.mykkumiserver.user;
 
 import com.swmarastro.mykkumiserver.auth.OAuthProvider;
+import com.swmarastro.mykkumiserver.category.CategoryService;
+import com.swmarastro.mykkumiserver.category.UserSubCategory;
+import com.swmarastro.mykkumiserver.category.UserSubCategoryRepository;
 import com.swmarastro.mykkumiserver.global.exception.CommonException;
 import com.swmarastro.mykkumiserver.global.exception.ErrorCode;
 import com.swmarastro.mykkumiserver.global.util.AwsS3Utils;
@@ -12,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -23,8 +27,10 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final AwsS3Utils awsS3Utils;
+    private final CategoryService categoryService;
 
     private final String PROFILE_IMAGE_PATH = "image/profileImage/";
+    private final UserSubCategoryRepository userSubCategoryRepository;
 
     public User getUserByUuid(UUID uuid) {
         return userRepository.findByUuid(uuid)
@@ -32,30 +38,35 @@ public class UserService {
     }
 
     public User saveUser(OAuthProvider provider, String email) {
-        return userRepository.save(User.of(provider, email));
+        User user = userRepository.save(User.of(provider, email));
+        categoryService.saveUserSubCategory(user);//유저 생성 시 유저가 선택한 카테고리 레코드 자동생성
+        return user;
     }
 
     public Optional<User> getUserByEmailAndProvider(String email, OAuthProvider provider) {
         return userRepository.findByEmailAndProvider(email, provider);
     }
 
-    //TODO 선택한 카테고리 정보 업데이트하는 부분은 추후 구현
     public User updateUser(User user, UpdateUserRequest updateUserRequest) {
         String nickname = updateUserRequest.getNickname();
         String introduction = updateUserRequest.getIntroduction();
         String imageUrl = null;
-
-        //프로필 이미지 S3 업로드
-        if (updateUserRequest.getProfileImage() != null) {
-            imageUrl = uploadProfileImage(updateUserRequest.getProfileImage());
-        }
+        List<Long> categoryIds = updateUserRequest.getCategoryIds();
 
         //중복된 닉네임일 때
         if (nickname != null && isNicknameExists(nickname)) {
             throw new CommonException(ErrorCode.DUPLICATE_VALUE, "이미 사용 중인 닉네임입니다.", "이미 사용 중인 닉네임입니다.");
         }
 
-        //업데이트
+        //유저가 선택한 카테고리 update
+        UserSubCategory userSubCategory = userSubCategoryRepository.findByUser(user);
+        userSubCategory.updateSubCategory(categoryIds);
+
+        //프로필 이미지 S3 업로드
+        if (updateUserRequest.getProfileImage() != null) {
+            imageUrl = uploadProfileImage(updateUserRequest.getProfileImage());
+        }
+
         user.updateUser(nickname, introduction, imageUrl);
         return user;
     }

@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Setter
@@ -17,5 +18,5 @@ public class UpdateUserRequest {
     private String nickname;
     private MultipartFile profileImage;
     private String introduction;
-    private List<Long> categories;
+    private List<Long> categoryIds = new ArrayList<>();
 }
