@@ -1,9 +1,6 @@
 package com.swmarastro.mykkumiserver.auth;
 
-import com.swmarastro.mykkumiserver.auth.dto.NewAccessTokenRequest;
-import com.swmarastro.mykkumiserver.auth.dto.NewAccessTokenResponse;
-import com.swmarastro.mykkumiserver.auth.dto.SigninRequest;
-import com.swmarastro.mykkumiserver.auth.dto.SigninResponse;
+import com.swmarastro.mykkumiserver.auth.dto.*;
 import com.swmarastro.mykkumiserver.auth.service.AuthService;
 import com.swmarastro.mykkumiserver.auth.token.TokenService;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +21,13 @@ public class AuthController {
     @PostMapping("/signin/kakao")
     public ResponseEntity<SigninResponse> signinKakao(@RequestBody SigninRequest request) {
         SigninResponse signinResponse = authService.signin(request, OAuthProvider.KAKAO);
+        return ResponseEntity.ok()
+                .body(signinResponse);
+    }
+
+    @PostMapping("/signin/apple")
+    public ResponseEntity<SigninResponse> signinApple(@RequestBody SigninRequest request) {
+        SigninResponse signinResponse = authService.signin(request, OAuthProvider.APPLE);
         return ResponseEntity.ok()
                 .body(signinResponse);
     }
