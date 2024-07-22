@@ -63,7 +63,7 @@ public class AuthService {
         if (userOptional.isPresent()) { //가입된 사용자
             return userOptional.get();
         } else { //신규가입, 사용자 회원가입 시키기
-            return userService.saveUser(OAuthProvider.KAKAO, email);
+            return userService.saveUser(oAuthProvider, email);
         }
     }
 
