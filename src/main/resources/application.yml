@@ -40,6 +40,13 @@ spring:
             client-name: Kakao
             authorization-grant-type: authorization_code
             redirect-uri: http://localhost:8080/login/oauth2/code/kakao
+          apple:
+            grant-type: authorization_code
+            client-id: ${apple_client_id}
+            key-id: ${apple_key_id}
+            team-id: ${apple_team_id}
+            audience: https://appleid.apple.com
+            private-key: ${apple_private_key}
 
 server:
   port: 8080

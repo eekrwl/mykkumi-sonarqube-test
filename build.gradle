@@ -41,6 +41,22 @@ dependencies {
     implementation 'javax.xml.bind:jaxb-api:2.3.1'
     runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.5'
     runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.5'
+
+    //bouncycastle
+    implementation 'org.bouncycastle:bcprov-jdk15on:1.70'
+    implementation 'org.bouncycastle:bcpkix-jdk15on:1.70'
+
+    // Jackson for JSON processing
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.15.2'
+    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.15.2'
+
+    // Nimbus JOSE + JWT for JWT processing
+    implementation 'com.nimbusds:nimbus-jose-jwt:9.11.1'
+
+    // json-simple for JSON processing
+    implementation 'com.googlecode.json-simple:json-simple:1.1.1'
+
 }
 
 tasks.named('test') {
