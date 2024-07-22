@@ -52,7 +52,7 @@ dependencies {
     implementation 'com.fasterxml.jackson.core:jackson-annotations:2.15.2'
 
     // Nimbus JOSE + JWT for JWT processing
-    implementation 'com.nimbusds:nimbus-jose-jwt:9.11.1'
+    implementation 'com.nimbusds:nimbus-jose-jwt:9.40'
 
     // json-simple for JSON processing
     implementation 'com.googlecode.json-simple:json-simple:1.1.1'
