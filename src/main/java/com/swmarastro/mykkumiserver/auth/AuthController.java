@@ -19,14 +19,14 @@ public class AuthController {
     private final TokenService tokenService;
 
     @PostMapping("/signin/kakao")
-    public ResponseEntity<SigninResponse> signinKakao(@RequestBody SigninRequest request) {
+    public ResponseEntity<SigninResponse> signinKakao(@RequestBody KakaoSigninRequest request) {
         SigninResponse signinResponse = authService.signin(request, OAuthProvider.KAKAO);
         return ResponseEntity.ok()
                 .body(signinResponse);
     }
 
     @PostMapping("/signin/apple")
-    public ResponseEntity<SigninResponse> signinApple(@RequestBody SigninRequest request) {
+    public ResponseEntity<SigninResponse> signinApple(@RequestBody AppleSigninRequest request) {
         SigninResponse signinResponse = authService.signin(request, OAuthProvider.APPLE);
         return ResponseEntity.ok()
                 .body(signinResponse);

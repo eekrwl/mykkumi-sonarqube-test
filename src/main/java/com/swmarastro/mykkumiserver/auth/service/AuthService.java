@@ -1,6 +1,8 @@
 package com.swmarastro.mykkumiserver.auth.service;
 
 import com.swmarastro.mykkumiserver.auth.OAuthProvider;
+import com.swmarastro.mykkumiserver.auth.dto.AppleSigninRequest;
+import com.swmarastro.mykkumiserver.auth.dto.KakaoSigninRequest;
 import com.swmarastro.mykkumiserver.auth.dto.SigninRequest;
 import com.swmarastro.mykkumiserver.auth.dto.SigninResponse;
 import com.swmarastro.mykkumiserver.auth.token.TokenService;
@@ -27,16 +29,7 @@ public class AuthService {
     public SigninResponse signin(SigninRequest request, OAuthProvider oAuthProvider) {
 
         //필요한 토큰 가져오기
-        String token = null;
-        if (oAuthProvider == OAuthProvider.KAKAO) { //카카오는 엑세스 토큰
-            token = request.getAccessToken();
-        } else if (oAuthProvider == OAuthProvider.APPLE) { //애플은 인가코드
-            token = request.getAuthorizationCode();
-        }
-        if (token == null) {
-            throw new CommonException(ErrorCode.NOT_FOUND, "로그인할 수 없습니다.", "토큰을 찾을 수 없습니다.");
-        }
-
+        String token = getToken(request, oAuthProvider);
         //사용자 이메일 받아오기
         String email = getEmail(token, oAuthProvider);
         //유저 찾기
@@ -53,7 +46,18 @@ public class AuthService {
         return SigninResponse.of(refreshToken, accessToken);
     }
 
-    User getUserByEmailAndProvider(String email, OAuthProvider oAuthProvider) {
+    private String getToken(SigninRequest request, OAuthProvider oAuthProvider) {
+        if (oAuthProvider == OAuthProvider.KAKAO) { //카카오는 엑세스 토큰
+            KakaoSigninRequest kakaoSigninRequest = (KakaoSigninRequest) request;
+            return kakaoSigninRequest.getAccessToken();
+        } else if (oAuthProvider == OAuthProvider.APPLE) { //애플은 인가코드
+            AppleSigninRequest appleSigninRequest = (AppleSigninRequest) request;
+            return appleSigninRequest.getAuthorizationCode();
+        }
+        throw new CommonException(ErrorCode.NOT_FOUND, "로그인할 수 없습니다.", "토큰을 찾을 수 없습니다.");
+    }
+
+    private User getUserByEmailAndProvider(String email, OAuthProvider oAuthProvider) {
         //사용자 이미 가입된 사용자인지 구분하기
         Optional<User> userOptional = userService.getUserByEmailAndProvider(email, oAuthProvider);
         if (userOptional.isPresent()) { //가입된 사용자
@@ -63,7 +67,7 @@ public class AuthService {
         }
     }
 
-    String getEmail(String token, OAuthProvider oAuthProvider) {
+    private String getEmail(String token, OAuthProvider oAuthProvider) {
         if (oAuthProvider == OAuthProvider.KAKAO) {
             return kakaoService.getKakaoInfo(token);
         } else if (oAuthProvider == OAuthProvider.APPLE) {
